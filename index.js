@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const Joi = require("joi");
 const dotenv = require("dotenv");
-const Users = require("./db/contacts.json");
+const Users = require("./contacts");
 
 const app = express();
 const PORT = 3000;
