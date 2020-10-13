@@ -8,37 +8,51 @@ const contactsPath = path.join(__dirname, "./db/contacts.json");
 
 async function listContacts() {
   // ...твой код
-  return JSON.parse(await fsPromise.readFile(contactsPath, "utf-8"));
+  try {
+    return JSON.parse(await fsPromise.readFile(contactsPath, "utf-8"));
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
 }
 
 async function getContactById(contactId) {
   // ...твой код
-  const result = await listContacts();
-  const idUser = result.find(user => user.id === contactId);
-
-  return idUser;
+  try {
+    const result = await listContacts();
+    const idUser = result.find(user => user.id === contactId);
+    return idUser;
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
 }
 
 async function removeContact(contactId) {
   // ...твой код
-  const data = await listContacts();
-  const idUser = data.filter(user => user.id !== contactId);
-
-  return idUser;
+  try {
+    const data = await listContacts();
+    const idUser = data.filter(user => user.id !== contactId);
+    return idUser;
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
 }
 
 async function addContact(name, email, phone) {
   // ...твой код
-  const data = await listContacts();
-  const id = uuidv4();
-  const addedUser = { id, name, email, phone };
-
-  const updatedList = [...data, addedUser];
-
-  await fsPromise.writeFile(contactsPath, JSON.stringify(updatedList), err => {
-    if (err) throw err;
-  });
-  return updatedList;
+  try {
+    const data = await listContacts();
+    const id = uuidv4();
+    const addedUser = { id, name, email, phone };
+    const updatedList = [...data, addedUser];
+    await fsPromise.writeFile(contactsPath, JSON.stringify(updatedList))
+    return updatedList;
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
 }
 
 module.exports = { listContacts, getContactById, removeContact, addContact };
