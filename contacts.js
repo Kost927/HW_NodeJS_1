@@ -32,8 +32,8 @@ async function removeContact(contactId) {
   // ...твой код
   try {
     const data = await listContacts();
-    const idUser = data.filter(user => user.id !== contactId);
-    return idUser;
+    const removedContact = data.filter(user => user.id !== contactId);
+    await fsPromise.writeFile(contactsPath, JSON.stringify(removedContact));
   } catch (err) {
     console.log(err);
     process.exit(1);

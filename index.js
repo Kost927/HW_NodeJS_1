@@ -20,6 +20,7 @@ app.get("/contacts", async (req, res, next) => {
 app.get("/contacts/:contactId", async (req, res) => {
   const { contactId } = req.params;
     const contact = await getContactById(+contactId);
+    // console.log('object', req.params)
   if (contact) {
     res.status(200).json(contact);
     return;
@@ -45,26 +46,24 @@ app.post("/contacts", async (req, res) => {
     } 
 });
 
-app.delete('contacts/:contactId', async (req, res) => {
+app.delete("/contacts/:contactId", async (req, res) => {
     const { contactId } = req.params;
-    const id = await getContactById(+contactId);
-    console.log('object', contactId)
+    const id = await getContactById(contactId);
     if (id) {
         await removeContact(contactId);
-        res.status(200).json("contact deleted");
-        return;
+        return res.status(204).json("contact deleted");
     }
     res.status(404).json("Not found");
 })
 
-// app.patch('/:contactId', async (req, res) => {
+// app.patch("/contacts/:contactId", async (req, res) => {
 //     const { contactId } = req.params;
-//     const contact = await getContactById(+contactId);
+//     const contact = await getContactById(contactId);
 
 //     if (contact && req.body) {
-//         const updateContact = await updateContact(+contactId, req.body);
-//         res.status(200).send(updateContact);
-//         return;
+//         const updateContact = await updateContact(contactId, req.body);
+//         return res.status(200).send(updateContact);
+        
 //     };
 //     res.status(404).json('Not found')
 // })
