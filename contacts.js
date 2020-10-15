@@ -38,7 +38,7 @@ async function removeContact(contactId) {
     console.log(err);
     process.exit(1);
   }
-}
+} 
 
 async function addContact(name, email, phone) {
   // ...твой код
@@ -55,4 +55,27 @@ async function addContact(name, email, phone) {
   }
 }
 
-module.exports = { listContacts, getContactById, removeContact, addContact };
+
+async function updateContact(id, contactParams) {
+  try {
+    const contactsList = await listContacts();
+    const contactIndex = contactsList.findIndex((contact) => contact.id === id);
+    if (contactIndex === -1) {
+      return;
+    }
+
+    contactsList[contactIndex] = {
+      ...contactsList[contactIndex],
+      ...contactParams,
+    };
+
+    await fsPromise.writeFile(contactsPath, JSON.stringify([...contactsList]));
+
+    return contactsList[contactIndex];
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
+  }
+}
+
+module.exports = { listContacts, getContactById, removeContact, addContact, updateContact };
