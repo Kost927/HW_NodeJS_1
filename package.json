@@ -1,5 +1,5 @@
 {
-  "name": "hw_nodejs_1",
+  "name": "node_js",
   "version": "1.0.0",
   "description": "HW_Nodejs_2",
   "main": "index.js",
@@ -26,7 +26,7 @@
     "nodejs",
     "hw"
   ],
-  "author": "",
+  "author": "Kostiantyn <kost927@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Kost927/HW_NodeJS_1/issues"
