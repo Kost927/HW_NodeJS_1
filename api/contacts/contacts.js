@@ -4,7 +4,7 @@ const path = require("path");
 
 const { promises: fsPromise } = fs;
 
-const contactsPath = path.join(__dirname, "./db/contacts.json");
+const contactsPath = path.join(__dirname, "../../db/contacts.json");
 
 async function listContacts() {
   // ...твой код
@@ -12,7 +12,6 @@ async function listContacts() {
     return JSON.parse(await fsPromise.readFile(contactsPath, "utf-8"));
   } catch (err) {
     console.log(err);
-    process.exit(1);
   }
 }
 
@@ -24,7 +23,6 @@ async function getContactById(contactId) {
     return idUser;
   } catch (err) {
     console.log(err);
-    process.exit(1);
   }
 }
 
@@ -36,7 +34,6 @@ async function removeContact(contactId) {
     await fsPromise.writeFile(contactsPath, JSON.stringify(removedContact));
   } catch (err) {
     console.log(err);
-    process.exit(1);
   }
 } 
 
@@ -51,7 +48,6 @@ async function addContact(name, email, phone) {
     return updatedList;
   } catch (err) {
     console.log(err);
-    process.exit(1);
   }
 }
 
@@ -74,7 +70,6 @@ async function updateContact(id, contactParams) {
     return contactsList[contactIndex];
   } catch (err) {
     console.log(err);
-    process.exit(1);
   }
 }
 

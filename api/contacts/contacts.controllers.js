@@ -1,10 +1,10 @@
-const contacts = require("../../contacts");
+const contacts = require("./contacts");
 const Joi = require("joi");
 
 exports.getContacts = async (req, res, next) => {
     try {
         const contactsList = await contacts.listContacts();
-        res.status(200).json(contactsList);
+       return res.status(200).json(contactsList);
     } catch (err) {
         next(err)
     }
@@ -15,10 +15,9 @@ exports.getContactsById = async (req, res, next) => {
         const { contactId } = req.params;
         const contact = await contacts.getContactById(contactId);
         if (contact) {
-            res.status(200).json(contact);
-            return;
+            return res.status(200).json(contact);           
         }
-        res.status(404).json("Not found");
+        res.status(404).json({ message: "Not found" });
     } catch (err) {
         next(err)
     }
@@ -36,12 +35,12 @@ exports.addContacts = async (req, res, next) => {
 
         const { error } = contactSchema.validate(req.body);
         if (error) {
-            res.status(400).json('missing required name field');
-            return;
-        } else {
-            const contactsAdd = await contacts.addContact(name, email, phone);
-            res.status(201).json(contactsAdd);
-        }
+            return res.status(400).json('missing required name field');
+            
+        }  
+        const contactsAdd = await contacts.addContact(name, email, phone);
+        return res.status(201).json(contactsAdd);
+        
     } catch (err) {
         next(err)
     }
@@ -56,7 +55,7 @@ exports.removeContact = async (req, res, next) => {
             await contacts.removeContact(contactId);
             return res.status(204).json("contact deleted");
         }
-        res.status(404).json("Not found");
+        return res.status(404).json({ message: "Not found"});
     } catch (err) {
         next(err)
     }
@@ -74,13 +73,11 @@ exports.updateContact = async (req, res, next) => {
 
         const { error } = updatedContactSchema.validate(req.body);
 
-        if (contact & error ) {
-            res.status(404).json('Not found')
-        } else {
-            const updatedContact = await contacts.updateContact(contactId, req.body);
-            res.status(200).send(updatedContact);
-            return;
-        }
+        if (contact && error ) {
+           return res.status(404).json('Not found')
+        } 
+        const updatedContact = await contacts.updateContact(contactId, req.body);
+        return res.status(200).send(updatedContact);
         
     } catch (err) {
         next(err)
