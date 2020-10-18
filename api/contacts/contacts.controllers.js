@@ -1,9 +1,9 @@
-const contacts = require("./contacts");
 const Joi = require("joi");
+const ContactModel = require('./contscts.modal')
 
 exports.getContacts = async (req, res, next) => {
     try {
-        const contactsList = await contacts.listContacts();
+        const contactsList = await ContactModel.find();
        return res.status(200).json(contactsList);
     } catch (err) {
         next(err)
@@ -13,7 +13,7 @@ exports.getContacts = async (req, res, next) => {
 exports.getContactsById = async (req, res, next) => {
     try {
         const { contactId } = req.params;
-        const contact = await contacts.getContactById(contactId);
+        const contact = await ContactModel.findById(contactId);
         if (contact) {
             return res.status(200).json(contact);           
         }
@@ -26,7 +26,6 @@ exports.getContactsById = async (req, res, next) => {
 
 exports.addContacts = async (req, res, next) => {
     try {
-        const { name, email, phone } = req.body;
         const contactSchema = Joi.object({
             name: Joi.string().required(),
             email: Joi.string().email().required(),
@@ -38,7 +37,7 @@ exports.addContacts = async (req, res, next) => {
             return res.status(400).json('missing required name field');
             
         }  
-        const contactsAdd = await contacts.addContact(name, email, phone);
+        const contactsAdd = await ContactModel.create(req.body);
         return res.status(201).json(contactsAdd);
         
     } catch (err) {
@@ -50,9 +49,9 @@ exports.addContacts = async (req, res, next) => {
 exports.removeContact = async (req, res, next) => {
     try {
         const { contactId } = req.params;
-        const id = await contacts.getContactById(contactId);
+        const id = await ContactModel.findById(contactId);
         if (id) {
-            await contacts.removeContact(contactId);
+            await ContactModel.deleteOne({ _id: contactId });
             return res.status(204).json("contact deleted");
         }
         return res.status(404).json({ message: "Not found"});
@@ -64,7 +63,7 @@ exports.removeContact = async (req, res, next) => {
 exports.updateContact = async (req, res, next) => {
     try {
         const { contactId } = req.params;
-        const contact = await contacts.getContactById(contactId);
+        const contact = await ContactModel.findById(contactId);
         const updatedContactSchema = Joi.object({
             name: Joi.string(),
             email: Joi.string().email(),
@@ -76,7 +75,7 @@ exports.updateContact = async (req, res, next) => {
         if (contact && error ) {
            return res.status(404).json('Not found')
         } 
-        const updatedContact = await contacts.updateContact(contactId, req.body);
+        const updatedContact = await ContactModel.findByIdAndUpdate(contactId, req.body);
         return res.status(200).send(updatedContact);
         
     } catch (err) {
