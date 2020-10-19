@@ -75,7 +75,9 @@ exports.updateContact = async (req, res, next) => {
         if (contact && error ) {
            return res.status(404).json('Not found')
         } 
-        const updatedContact = await ContactModel.findByIdAndUpdate(contactId, req.body);
+        const updatedContact = await ContactModel.findByIdAndUpdate(contactId, req.body, {
+            new: true,
+        });
         return res.status(200).send(updatedContact);
         
     } catch (err) {

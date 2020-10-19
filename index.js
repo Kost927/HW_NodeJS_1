@@ -9,17 +9,18 @@ dotenv.config();
 const DB_URI = `mongodb+srv://Kostya:D6UMCq2iZy7GrBAU@cluster0.mpf0h.mongodb.net/db-contacts?retryWrites=true&w=majority`
 
 const runServer = async () => {
-  await mongoose.connect(DB_URI, { useUnifiedTopology: true })
-  console.log('Data base has been connected')
+  try {
+    await mongoose.connect(DB_URI, { useUnifiedTopology: true })
+    console.log('Data base has been connected')
+  } catch (err) {
+      console.log(error);
+      process.exit(1);
+  }
+
 const app = express();
 
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Header", "*");
-  res.setHeader("Access-Control-Allow-Method", "*");
-  next();
-});
+app.use(cors());
 
 app.use(express.json());
 app.use("/contacts", contactsRouter);
