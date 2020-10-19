@@ -42,7 +42,7 @@ exports.removeContact = async (req, res, next) => {
     const id = await contacts.getContactById(contactId);
     if (id) {
       await contacts.removeContact(contactId);
-      return res.status(204).json("contact deleted");
+        return res.status(204).send();
     }
     return res.status(404).json({ message: "Not found" });
   } catch (err) {
@@ -55,7 +55,7 @@ exports.updateContact = async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await contacts.getContactById(contactId);
 
-    if (contact && req.body) {
+      if (!contact) {
     return res.status(404).json({ message: "Not found" });
     }
     const updatedContact = await contacts.updateContact(contactId, req.body);
