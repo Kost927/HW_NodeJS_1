@@ -1,4 +1,5 @@
 const contacts = require("./contacts");
+const errCather = require("../utils/errCatcher")
 
 exports.getContacts = async (req, res, next) => {
   try {
@@ -9,21 +10,16 @@ exports.getContacts = async (req, res, next) => {
   }
 };
 
-exports.getContactsById = async (req, res, next) => {
-  try {
+exports.getContactsById = errCather(async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await contacts.getContactById(contactId);
     if (contact) {
       return res.status(200).json(contact);
     }
     res.status(404).json({ message: "Not found" });
-  } catch (err) {
-    next(err);
-  }
-};
+});
 
-exports.addContacts = async (req, res, next) => {
-  try {
+exports.addContacts = errCather(async (req, res, next) => {
     const { name, email, phone } = req.body;
 
     if (name.length) {
@@ -31,13 +27,9 @@ exports.addContacts = async (req, res, next) => {
       return res.status(201).json(contactsAdd);
     }
     return res.status(400).json({ message: "missing required name field" });
-  } catch (err) {
-    next(err);
-  }
-};
+});
 
-exports.removeContact = async (req, res, next) => {
-  try {
+exports.removeContact = errCather(async (req, res, next) => {
     const { contactId } = req.params;
     const id = await contacts.getContactById(contactId);
     if (id) {
@@ -45,13 +37,9 @@ exports.removeContact = async (req, res, next) => {
         return res.status(204).send();
     }
     return res.status(404).json({ message: "Not found" });
-  } catch (err) {
-    next(err);
-  }
-};
+});
 
-exports.updateContact = async (req, res, next) => {
-  try {
+exports.updateContact = errCather(async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await contacts.getContactById(contactId);
 
@@ -60,7 +48,4 @@ exports.updateContact = async (req, res, next) => {
     }
     const updatedContact = await contacts.updateContact(contactId, req.body);
     return res.status(200).send(updatedContact);
-  } catch (err) {
-    next(err);
-  }
-};
+});
