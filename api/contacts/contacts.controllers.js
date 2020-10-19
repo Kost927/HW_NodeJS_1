@@ -1,14 +1,11 @@
 const contacts = require("./contacts");
 const errCather = require("../utils/errCatcher")
 
-exports.getContacts = async (req, res, next) => {
-  try {
+exports.getContacts = errCather(async (req, res, next) => {
+
     const contactsList = await contacts.listContacts();
     return res.status(200).json(contactsList);
-  } catch (err) {
-    next(err);
-  }
-};
+});
 
 exports.getContactsById = errCather(async (req, res, next) => {
     const { contactId } = req.params;
