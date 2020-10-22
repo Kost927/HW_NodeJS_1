@@ -3,7 +3,7 @@ const ContactModel = require('./contscts.modal')
 
 
 exports.getContacts = errCather(async (req, res, next) => {
-  const contactsList = await await ContactModel.find();
+  const contactsList = await ContactModel.find();
     return res.status(200).json(contactsList);
 });
 

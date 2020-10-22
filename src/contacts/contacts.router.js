@@ -6,11 +6,11 @@ const Joi = require("joi");
 
 const contactsRouter = Router();
 const {
-  getContacts,
-  getContactsById,
-  addContacts,
-  removeContact,
-  updateContact
+    getContacts,
+    getContactsById,
+    addContacts,
+    removeContact,
+    updateContact
 } = ContactsController;
 
 const addContactsSchema = Joi.object({
