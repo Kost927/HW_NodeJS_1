@@ -15,32 +15,38 @@ class UserModel {
         this.db = mongoose.model("Users", usersSchema);
     }
 
-    createUser = async (userData) => {
-        return await this.db.create(userData);
+    getUsers = async (query) => {
+        return await this.db.find(query);
     };
-    
+
     findUser = async (query) => {
         return await this.db.findOne(query);
     };
-    // getUsers = async (query) => {
-    //     return await this.db.find(query);
-    // };
+    findEmailOfUsers = async (email) => {
+        return await this.db.findOne({ email });
+    };
 
-    // getUserById = async (userId) => {
-    //     return await this.db.findById(userId);
-    // };
+    findUserById = async (userId) => {
+        return await this.db.findById(userId);
+    };
 
+    isExistUser = async (email) => {
+        return await this.findEmailOfUsers(email);
+    };
 
+    createUser = async (userData) => {
+        return await this.db.create(userData);
+    };
 
-    // updateUser = async (userId, userData) => {
-    //     return await this.db.findByIdAndUpdate(userId, userData, {
-    //         new: true,
-    //     });
-    // };
+    updateUser = async (userId, userData) => {
+        return await this.db.findByIdAndUpdate(userId, userData, {
+            new: true,
+        });
+    };
 
-    // deleteUser = async (userId) => {
-    //     return await this.db.findByIdAndRemove(userId);
-    // };
+    deleteUser = async (userId) => {
+        return await this.db.findByIdAndRemove(userId);
+    };
 }
 module.exports = new UserModel();
 

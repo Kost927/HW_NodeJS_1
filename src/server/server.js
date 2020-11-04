@@ -3,9 +3,11 @@ const cors = require("cors");
 const fs = require("fs").promises;
 const contactsRouter = require("../contacts/contacts.router");
 const authRouter = require("../auth/auth.router");
+const usersRouter = require("../users/users.router");
 const morgan = require("morgan");
 const dotenv = require('dotenv');
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 const DB_URI = `mongodb+srv://Kostya:D6UMCq2iZy7GrBAU@cluster0.mpf0h.mongodb.net/db-contacts?retryWrites=true&w=majority`
@@ -33,11 +35,13 @@ class CrudServer {
         this.app.use(express.json());
         this.app.use(cors({ origin: "http://localhost:3000" }));
         this.app.use(morgan("combined"));
+        this.app.use(cookieParser());
     }
 
     initRouters() {
         this.app.use("/contacts", contactsRouter);
         this.app.use("/auth", authRouter);
+        this.app.use("/users", usersRouter);
         this.app.use((req, res) => res.status(404).json({ message: 'Not found, try to move on correct adress' }));
 
     }

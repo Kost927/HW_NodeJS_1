@@ -4,15 +4,25 @@ const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../../.env") });
+const { createVarificationToken } = require("../services/token.service");
 
 const registerController = errCather(async (req, res, next) => {
   const { body } = req;
+
+  if (await UserModel.isExistUser(body.email)) {
+    return res.status(409).json({
+      message: `Email ${body.email} in use`,
+    });
+  }
   const hashedPassword = await bcrypt.hash(body.password, Number(process.env.SALT));
-  await UserModel.createUser({
+
+  const newUser = await UserModel.createUser({
     ...body,
     password: hashedPassword
   });
-  res.status(201).send("created");
+  res.status(201).json({
+    user: { email: newUser.email, subscription: newUser.subscription },
+  });
 });
 
 const logInController = errCather(async (req, res, next) => {
@@ -27,13 +37,26 @@ const logInController = errCather(async (req, res, next) => {
   if (!isPasswordEqual) {
     return res.status(404).send(`Wrong password`);
   }
-  res.json({
-    email: user.email,
-    id: user._id
+
+  const token = await createVarificationToken({ id: user._id });
+
+  res.cookie("token", token, { maxAge: 900000, httpOnly: true });
+  return res.json({
+    token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
   });
+});
+
+const logOutController = errCather(async (req, res, next) => {
+  res.cookie("token", null, { maxAge: 0, httpOnly: true });
+  return res.sendStatus(204);
 });
 
 module.exports = {
   registerController,
-  logInController
+  logInController,
+  logOutController
 };
