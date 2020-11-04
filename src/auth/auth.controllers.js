@@ -1,6 +1,6 @@
 const errCather = require("../utils/errCatcher");
 const UserModel = require("../users/users.modal");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../../.env") });
@@ -31,11 +31,11 @@ const logInController = errCather(async (req, res, next) => {
   } = req;
   const user = await UserModel.findUser({ email });
   if (!user) {
-    return res.status(404).send(`User with such email: ${email} not found`);
+    return res.status(401).send({ message: `Unauthorized` });
   }
   const isPasswordEqual = await bcrypt.compare(password, user.password);
   if (!isPasswordEqual) {
-    return res.status(404).send(`Wrong password`);
+    return res.status(401).send({ message: `Unauthorized` });
   }
 
   const token = await createVarificationToken({ id: user._id });

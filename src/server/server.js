@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs").promises;
-const contactsRouter = require("../contacts/contacts.router");
-const authRouter = require("../auth/auth.router");
-const usersRouter = require("../users/users.router");
 const morgan = require("morgan");
 const dotenv = require('dotenv');
 const mongoose = require("mongoose");
@@ -39,9 +36,7 @@ class CrudServer {
     }
 
     initRouters() {
-        this.app.use("/contacts", contactsRouter);
-        this.app.use("/auth", authRouter);
-        this.app.use("/users", usersRouter);
+        this.app.use("/api/v1", require("../routers"));
         this.app.use((req, res) => res.status(404).json({ message: 'Not found, try to move on correct adress' }));
 
     }
