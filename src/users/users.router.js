@@ -5,6 +5,8 @@ const {
     getUserByIdController,
     updateUsersController,
     deleteUsersController,
+    updateUserAvatarController,
+    uploadUserPhoto,
 } = require("./users.controllers");
 const usersRouter = Router();
 
@@ -18,6 +20,8 @@ usersRouter.get("/current", checkAuthTokenMiddleWare, getCurrentUserController);
 
 usersRouter.get("/:userId", checkAuthTokenMiddleWare, getUserByIdController);
 usersRouter.patch("/", checkAuthTokenMiddleWare, updateUsersController);
+usersRouter.patch("/users/avatars", checkAuthTokenMiddleWare, updateUserAvatarController );
 usersRouter.delete("/:userId", checkAuthTokenMiddleWare, deleteUsersController);
+usersRouter.patch("/images", checkAuthTokenMiddleWare, uploadUserPhoto);
 
 module.exports = usersRouter;

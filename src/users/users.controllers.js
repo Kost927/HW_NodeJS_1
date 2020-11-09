@@ -1,13 +1,16 @@
 const UserData = require("./users.modal");
-const catchAsync = require("../utils/errCatcher");
+const errCatcher = require("../utils/errCatcher");
+const upload = require('../utils/imagesUploader');
 
-const getUsersController = catchAsync(async (req, res, next) => {
+const uploadUserPhoto = upload.single('avatarURL');
+
+const getUsersController = errCatcher(async (req, res, next) => {
     const { query } = req;
     const users = await UserData.getUsers(query);
     res.json(users);
 });
 
-const getCurrentUserController = catchAsync(async (req, res, next) => {
+const getCurrentUserController = errCatcher(async (req, res, next) => {
     const { id: userId } = req.user;
     const currentUser = await UserData.findUserById(userId);
     return res.json({
@@ -16,7 +19,7 @@ const getCurrentUserController = catchAsync(async (req, res, next) => {
     });
 });
 
-const getUserByIdController = catchAsync(async (req, res, next) => {
+const getUserByIdController = errCatcher(async (req, res, next) => {
     const { userId } = req.params;
     const user = await UserData.getUserById(userId);
     if (user) {
@@ -25,7 +28,7 @@ const getUserByIdController = catchAsync(async (req, res, next) => {
     res.status(404).json({ message: "Not found" });
 });
 
-const updateUsersController = catchAsync(async (req, res, next) => {
+const updateUsersController = errCatcher(async (req, res, next) => {
     const { id, ...data } = req.body;
     const user = await UserData.getUserById(id);
     if (user && req.body) {
@@ -35,7 +38,23 @@ const updateUsersController = catchAsync(async (req, res, next) => {
     res.status(404).json({ message: "Not found" });
 });
 
-const deleteUsersController = catchAsync(async (req, res, next) => {
+const updateUserAvatarController = errCatcher(async (req, res, next) => {
+    console.log('req.user', req.user);
+    const id = req.user.id;
+    const user = await UserData.updateUser(id);
+
+    if (!user) {
+        return next(res.status(401).json({ message: "Not authorized" }));
+    }
+    const updatedUser = await UserData.updateUser(id, req.body);
+    res.json({
+        user: updatedUser,
+    });
+});
+
+
+
+const deleteUsersController = errCatcher(async (req, res, next) => {
     const { userId } = req.params;
     const user = await UserData.getUserById(userId);
     if (user) {
@@ -51,4 +70,6 @@ module.exports = {
     getCurrentUserController,
     updateUsersController,
     deleteUsersController,
+    uploadUserPhoto,
+    updateUserAvatarController,
 };

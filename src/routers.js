@@ -7,5 +7,7 @@ const authRouter = require("./auth/auth.router");
 app.use("/users", usersRouter);
 app.use("/contacts", contactsRouter);
 app.use("/auth", authRouter);
+app.use("/", usersRouter, express.static('public'));
+
 
 module.exports = app;

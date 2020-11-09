@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const dotenv = require('dotenv');
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const usersRouter = require("../users/users.router")
 
 dotenv.config();
 const DB_URI = `mongodb+srv://Kostya:D6UMCq2iZy7GrBAU@cluster0.mpf0h.mongodb.net/db-contacts?retryWrites=true&w=majority`
@@ -37,6 +38,7 @@ class CrudServer {
 
     initRouters() {
         this.app.use("/api/v1", require("../routers"));
+        // this.app.use('/', usersRouter, express.static('public'));
         this.app.use((req, res) => res.status(404).json({ message: 'Not found, try to move on correct adress' }));
 
     }

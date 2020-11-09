@@ -1,12 +1,13 @@
-const errCather = require("../utils/errCatcher");
+const errCatсher = require("../utils/errCatcher");
 const UserModel = require("../users/users.modal");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "../../.env") });
 const { createVarificationToken } = require("../services/token.service");
+const avatarGenerator = require('../utils/avatarGenerator');
 
-const registerController = errCather(async (req, res, next) => {
+const registerController = errCatсher(async (req, res, next) => {
   const { body } = req;
 
   if (await UserModel.isExistUser(body.email)) {
@@ -20,12 +21,23 @@ const registerController = errCather(async (req, res, next) => {
     ...body,
     password: hashedPassword
   });
+
+  const avatar = await avatarGenerator(newUser._id);
+  console.log(newUser._id)
+  const avatarURL = `http://localhost:${process.env.PORT}/images/${avatar}`;
+
+  const updatedUser = await UserModel.updateUser(newUser._id, { avatarURL });
+
   res.status(201).json({
-    user: { email: newUser.email, subscription: newUser.subscription },
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+      avatarURL: updatedUser.avatarURL
+    },
   });
 });
 
-const logInController = errCather(async (req, res, next) => {
+const logInController = errCatсher(async (req, res, next) => {
   const {
     body: { email, password }
   } = req;
@@ -50,7 +62,7 @@ const logInController = errCather(async (req, res, next) => {
   });
 });
 
-const logOutController = errCather(async (req, res, next) => {
+const logOutController = errCatсher(async (req, res, next) => {
   res.cookie("token", null, { maxAge: 0, httpOnly: true });
   return res.sendStatus(204);
 });
