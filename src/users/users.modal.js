@@ -12,7 +12,10 @@ const usersSchema = new mongoose.Schema({
         enum: ["free", "pro", "premium"],
         default: "free"
     },
-    token: String
+    token: String,
+    verificationToken: {
+        type: String,
+    },
 }, { versionKey: false });
 class UserModel {
     constructor() {
@@ -50,6 +53,13 @@ class UserModel {
 
     deleteUser = async (userId) => {
         return await this.db.findByIdAndRemove(userId);
+    };
+
+    updateUserToken = async verificationToken => {
+        return await this.db.findOneAndUpdate(
+            { verificationToken },
+            { verificationToken: null },
+        );
     };
 }
 module.exports = new UserModel();

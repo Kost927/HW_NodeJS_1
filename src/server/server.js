@@ -38,7 +38,6 @@ class CrudServer {
 
     initRouters() {
         this.app.use("/api/v1", require("../routers"));
-        // this.app.use('/', usersRouter, express.static('public'));
         this.app.use((req, res) => res.status(404).json({ message: 'Not found, try to move on correct adress' }));
 
     }

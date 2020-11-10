@@ -10,7 +10,17 @@ const verifyToken = async (token) => {
     return await jwt.verify(parsedToken, process.env.ACCESS_KEY);
 };
 
+const createEmailToken = (email) => {
+    return jwt.sign({ email }, process.env.SENDGRID_API_KEY);
+};
+
+const checkEmailToken = (token) => {
+    return jwt.verify(token, process.env.SENDGRID_API_KEY);
+};
+
 module.exports = {
     createVarificationToken,
     verifyToken,
+    createEmailToken,
+    checkEmailToken,
 };
